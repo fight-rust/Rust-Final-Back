@@ -11,7 +11,7 @@
  Target Server Version : 80018
  File Encoding         : 65001
 
- Date: 18/01/2023 02:00:28
+ Date: 18/01/2023 02:24:18
 */
 
 SET NAMES utf8mb4;
@@ -27,8 +27,8 @@ CREATE TABLE `answer_info`  (
   `questionId` int(11) NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `answerTime` datetime NULL DEFAULT NULL,
-  `result` int(11) NULL DEFAULT NULL,
-  `reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `result` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `runTime` float NULL DEFAULT NULL,
   PRIMARY KEY (`answerId`) USING BTREE,
   INDEX `contestId`(`contestId`) USING BTREE,
   INDEX `questionId`(`questionId`) USING BTREE,
@@ -41,7 +41,7 @@ CREATE TABLE `answer_info`  (
 -- ----------------------------
 -- Records of answer_info
 -- ----------------------------
-INSERT INTO `answer_info` VALUES (1, 1, 2, 'aa12', '2023-01-27 20:29:34', 1, NULL);
+INSERT INTO `answer_info` VALUES (1, 1, 2, 'aa12', '2023-01-27 20:29:34', 'success', 220);
 
 -- ----------------------------
 -- Table structure for contest_info
