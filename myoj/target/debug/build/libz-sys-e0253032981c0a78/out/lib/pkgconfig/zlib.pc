@@ -1,0 +1,13 @@
+prefix=c:\Users\86189\Desktop\Rust-Final\myoj\target\debug\build\libz-sys-e0253032981c0a78\out
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+sharedlibdir=@sharedlibdir@
+includedir=@includedir@
+
+Name: zlib
+Description: zlib compression library
+Version: @VERSION@
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
