@@ -8,13 +8,13 @@ use serde::{Serialize, Deserialize};
 pub struct User {
     pub name: String,
     pub password:String,
-    pub isManager:usize,
+    pub is_manager:usize,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Contest {
     pub id: usize,
-    pub name: String,
+    pub title: String,
     pub user: String,
     pub start_time: String,
     pub end_time: String,
@@ -28,6 +28,7 @@ pub struct Answer {
     pub question:usize,
     pub result: String,
     pub answer_time: String,
+    pub anaswer_content:String,
     pub run_time: Vec<u64>,
 } 
 
@@ -39,9 +40,6 @@ pub struct Problem {
     pub example: String,
 } 
 
-pub struct Response {
-    response:String,
-}
 
 //全局变量
 lazy_static! {
@@ -59,7 +57,7 @@ lazy_static! {
          = Arc::new(Mutex::new(vec![User {
             name: "111".to_string(), // the default user
             password:"222".to_string(),
-            isManager:1
+            is_manager:1
          }]));
 } // Record the information of all the users
 

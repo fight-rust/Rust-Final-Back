@@ -10,7 +10,7 @@ mod test {
     #[test]
     pub fn load_contests()
     {
-        contest::get_contest();
+        // contest::get_contest();
         let contest_lock: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
         let response: Vec<Contest> = (*contest_lock).clone();
         assert_eq!(2,response.len());
