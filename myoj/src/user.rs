@@ -33,6 +33,7 @@ async fn user_login(body: web::Json<User>) -> impl Responder {
    query.push_str("'");
 
     let mut isexist=0;
+    println!("{}",query);
 
    conn.query_iter(query)
        .unwrap()
@@ -42,14 +43,16 @@ async fn user_login(body: web::Json<User>) -> impl Responder {
        });
 
     if isexist == 1{
+        println!("success!");
         let response=Response{
-            response:String::from("登录成功！")
+            response:String::from(&body.username)
         };
         HttpResponse::Ok().json(response)
     }
     else{
+        println!("fail");
         let response=Response{
-            response:String::from("用户名或密码错误！")
+            response:String::from("fail")
         };
         HttpResponse::Ok().json(response)
     }
