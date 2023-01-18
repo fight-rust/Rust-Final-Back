@@ -14,7 +14,13 @@ struct User {
 
 #[derive(Serialize, Deserialize, Clone)]
 struct Response {
+    response:String
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+struct LoginResponse {
     response:String,
+    ismanager:i32
 }
 
 
@@ -33,26 +39,26 @@ async fn user_login(body: web::Json<User>) -> impl Responder {
    query.push_str("'");
 
     let mut isexist=0;
-    println!("{}",query);
+    let mut isManager:Option<i32>=Some(0);
 
    conn.query_iter(query)
        .unwrap()
        .for_each(|row| {
-           row.ok();
+            isManager=row.unwrap().get(2);
            isexist=1;
        });
 
     if isexist == 1{
-        println!("success!");
-        let response=Response{
-            response:String::from(&body.username)
+        let response=LoginResponse{
+            response:String::from(&body.username),
+            ismanager:isManager.unwrap()
         };
         HttpResponse::Ok().json(response)
     }
     else{
-        println!("fail");
-        let response=Response{
-            response:String::from("fail")
+        let response=LoginResponse{
+            response:String::from("fail"),
+            ismanager:isManager.unwrap()
         };
         HttpResponse::Ok().json(response)
     }
@@ -81,6 +87,7 @@ async fn user_register(body: web::Json<User>) -> impl Responder {
        .for_each(|row| {
            row.ok();
            isexist=1;
+           
        });
 
     
