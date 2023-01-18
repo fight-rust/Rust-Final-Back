@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost
+ Source Server         : localhost_3306
  Source Server Type    : MySQL
- Source Server Version : 80018
+ Source Server Version : 80030
  Source Host           : localhost:3306
  Source Schema         : oj
 
  Target Server Type    : MySQL
- Target Server Version : 80018
+ Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 18/01/2023 02:24:18
+ Date: 18/01/2023 17:39:17
 */
 
 SET NAMES utf8mb4;
@@ -22,21 +22,21 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `answer_info`;
 CREATE TABLE `answer_info`  (
-  `answerId` int(11) NOT NULL AUTO_INCREMENT,
-  `contestId` int(11) NOT NULL,
-  `questionId` int(11) NOT NULL,
+  `answerId` int NOT NULL AUTO_INCREMENT,
+  `contestId` int NOT NULL,
+  `questionId` int NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `answerTime` datetime NULL DEFAULT NULL,
   `result` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `runTime` float NULL DEFAULT NULL,
   PRIMARY KEY (`answerId`) USING BTREE,
-  INDEX `contestId`(`contestId`) USING BTREE,
-  INDEX `questionId`(`questionId`) USING BTREE,
-  INDEX `username`(`username`) USING BTREE,
+  INDEX `contestId`(`contestId` ASC) USING BTREE,
+  INDEX `questionId`(`questionId` ASC) USING BTREE,
+  INDEX `username`(`username` ASC) USING BTREE,
   CONSTRAINT `answer_info_ibfk_1` FOREIGN KEY (`contestId`) REFERENCES `contest_info` (`contestId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `answer_info_ibfk_2` FOREIGN KEY (`questionId`) REFERENCES `question_info` (`questionId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `answer_info_ibfk_3` FOREIGN KEY (`username`) REFERENCES `user_info` (`username`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of answer_info
@@ -48,15 +48,15 @@ INSERT INTO `answer_info` VALUES (1, 1, 2, 'aa12', '2023-01-27 20:29:34', 'succe
 -- ----------------------------
 DROP TABLE IF EXISTS `contest_info`;
 CREATE TABLE `contest_info`  (
-  `contestId` int(11) NOT NULL,
+  `contestId` int NOT NULL,
   `contestName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `startTime` datetime NULL DEFAULT NULL,
   `endTime` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`contestId`) USING BTREE,
-  INDEX `username`(`username`) USING BTREE,
+  INDEX `username`(`username` ASC) USING BTREE,
   CONSTRAINT `contest_info_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user_info` (`username`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of contest_info
@@ -69,13 +69,13 @@ INSERT INTO `contest_info` VALUES (2, 'abc', '111', '2022-12-29 20:25:54', '2023
 -- ----------------------------
 DROP TABLE IF EXISTS `contest_question`;
 CREATE TABLE `contest_question`  (
-  `contestId` int(11) NOT NULL,
-  `questionId` int(11) NOT NULL,
-  INDEX `contestId`(`contestId`) USING BTREE,
-  INDEX `questionId`(`questionId`) USING BTREE,
+  `contestId` int NOT NULL,
+  `questionId` int NOT NULL,
+  INDEX `contestId`(`contestId` ASC) USING BTREE,
+  INDEX `questionId`(`questionId` ASC) USING BTREE,
   CONSTRAINT `contest_question_ibfk_1` FOREIGN KEY (`contestId`) REFERENCES `contest_info` (`contestId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `contest_question_ibfk_2` FOREIGN KEY (`questionId`) REFERENCES `question_info` (`questionId`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of contest_question
@@ -89,12 +89,12 @@ INSERT INTO `contest_question` VALUES (2, 4);
 -- ----------------------------
 DROP TABLE IF EXISTS `question_info`;
 CREATE TABLE `question_info`  (
-  `questionId` int(11) NOT NULL,
+  `questionId` int NOT NULL,
   `questionTitle` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `questionContent` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `questionExample` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`questionId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of question_info
@@ -111,15 +111,17 @@ DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info`  (
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `isManager` int(255) NULL DEFAULT NULL,
+  `isManager` int NULL DEFAULT NULL,
   PRIMARY KEY (`username`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_info
 -- ----------------------------
-INSERT INTO `user_info` VALUES ('111', '222', 1);
-INSERT INTO `user_info` VALUES ('aa12', 'bb34', 0);
-INSERT INTO `user_info` VALUES ('qwe', 'asd', 0);
+INSERT INTO `user_info` VALUES ('111', '222222', 1);
+INSERT INTO `user_info` VALUES ('aa12', 'bb3456', 0);
+INSERT INTO `user_info` VALUES ('qwe', 'asdefg', 0);
+INSERT INTO `user_info` VALUES ('test100', '123456', 0);
+INSERT INTO `user_info` VALUES ('test101', '123456', 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
