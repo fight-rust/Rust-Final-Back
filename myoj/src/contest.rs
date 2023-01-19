@@ -1,8 +1,15 @@
 use std::sync::{MutexGuard};
 use actix_web::{get, Responder, HttpResponse, web, post};
+use serde::{Serialize, Deserialize};
 use mysql::prelude::*;
 use mysql::*;
 use crate::{global::{CONTEST_INFO, Contest}, problem::load_problems};
+
+#[derive(Serialize, Deserialize, Clone)]
+struct Response {
+    pid:Vec<i32>,
+    ptitle:Vec<String>
+}
 
 pub fn load_contests() {
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
@@ -92,6 +99,32 @@ async fn get_contests_id(path: web::Path<usize>) -> impl Responder {
     let response: Contest = contest_info[contest_id - 1].clone();
     drop(contest_lock);
     // update_json_file();
+    HttpResponse::Ok().json(response)
+}
+
+#[post("/api/admin/problem/getproblemlist")]
+async fn admin_get_contests()->impl Responder{
+    let url = "mysql://root:123456@127.0.0.1:3306/oj";
+   let opts = Opts::from_url(url).unwrap();
+   let pool = Pool::new(opts).unwrap();
+   let mut conn = pool.get_conn().unwrap();
+
+   let mut query="select questionId,questionTitle from question_info".to_owned();
+   let mut pid:Vec<i32>=Vec::new();
+   let mut ptitle:Vec<String>=Vec::new();
+
+  conn.query_iter(query)
+  .unwrap()
+  .for_each(|row| {
+    pid.push(row.as_ref().unwrap().get(0).unwrap());
+    ptitle.push(row.unwrap().get(1).unwrap());
+
+  });
+
+    let response=Response{
+        pid:pid,
+        ptitle:ptitle
+    };
     HttpResponse::Ok().json(response)
 }
 

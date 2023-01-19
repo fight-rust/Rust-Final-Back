@@ -10,6 +10,7 @@ use crate::rank::get_rank;
 use crate::contest::get_contests;
 use crate::contest::get_contests_id;
 use crate::contest::post_contest;
+use crate::contest::admin_get_contests;
 use crate::answer::get_answers;
 
 mod user;
@@ -30,6 +31,7 @@ async fn main() -> std::io::Result<()> {
             .service(user_register)
             .service(get_contests)
             .service(get_contests_id)
+            .service(admin_get_contests)
             .service(post_contest)
             .service(get_problems)
             .service(get_problems_id)

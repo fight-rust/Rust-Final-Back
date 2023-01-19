@@ -44,7 +44,6 @@ async fn get_rank() -> impl Responder {
    conn.query_iter(query)
    .unwrap()
    .for_each(|row| {
-
         uname.push(row.as_ref().unwrap().get(0).unwrap());
         uacnum.push(row.unwrap().get(1).unwrap());
 

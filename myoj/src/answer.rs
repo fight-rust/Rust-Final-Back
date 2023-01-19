@@ -57,4 +57,3 @@ async fn get_answers() -> impl Responder {
 //     let response: Answer = answer_list[answer_id - 1].clone();
 //     HttpResponse::Ok().json(response)
 // }
-

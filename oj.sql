@@ -11,7 +11,7 @@
  Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 19/01/2023 21:35:42
+ Date: 20/01/2023 03:08:37
 */
 
 SET NAMES utf8mb4;
@@ -34,7 +34,6 @@ CREATE TABLE `answer_info`  (
   INDEX `contestId`(`contestId` ASC) USING BTREE,
   INDEX `questionId`(`questionId` ASC) USING BTREE,
   INDEX `username`(`username` ASC) USING BTREE,
-  CONSTRAINT `answer_info_ibfk_1` FOREIGN KEY (`contestId`) REFERENCES `contest_info` (`contestId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `answer_info_ibfk_2` FOREIGN KEY (`questionId`) REFERENCES `question_info` (`questionId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `answer_info_ibfk_3` FOREIGN KEY (`username`) REFERENCES `user_info` (`username`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
@@ -49,7 +48,7 @@ INSERT INTO `answer_info` VALUES (1, 1, 2, 'aa12', '2023-01-27 20:29:34', NULL, 
 -- ----------------------------
 DROP TABLE IF EXISTS `contest_info`;
 CREATE TABLE `contest_info`  (
-  `contestId` int NOT NULL,
+  `contestId` int NOT NULL AUTO_INCREMENT,
   `contestTitle` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `startTime` datetime NULL DEFAULT NULL,
@@ -76,7 +75,6 @@ CREATE TABLE `contest_question`  (
   `questionId` int NOT NULL,
   INDEX `contestId`(`contestId` ASC) USING BTREE,
   INDEX `questionId`(`questionId` ASC) USING BTREE,
-  CONSTRAINT `contest_question_ibfk_1` FOREIGN KEY (`contestId`) REFERENCES `contest_info` (`contestId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `contest_question_ibfk_2` FOREIGN KEY (`questionId`) REFERENCES `question_info` (`questionId`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
@@ -106,6 +104,7 @@ INSERT INTO `question_info` VALUES (1, 'q1', 'afdsaf', '2321');
 INSERT INTO `question_info` VALUES (2, 'q2', 'agdvafas', '234234');
 INSERT INTO `question_info` VALUES (3, 'q3', 'dsgdfgasfd', '43342');
 INSERT INTO `question_info` VALUES (4, 'q4', 'ewrfsad', '43523');
+INSERT INTO `question_info` VALUES (9, 'q5', 'dfdsfdsfds', 'dsfsdfsd');
 
 -- ----------------------------
 -- Table structure for user_info
