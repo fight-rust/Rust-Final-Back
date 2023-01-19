@@ -6,6 +6,7 @@ use problem::load_problems;
 
 use crate::user::user_login;
 use crate::user::user_register;
+use crate::rank::get_rank;
 use crate::contest::get_contests;
 use crate::contest::get_contests_id;
 use crate::contest::post_contest;
@@ -15,6 +16,7 @@ mod test;
 mod contest;
 mod global;
 mod problem;
+mod rank;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -29,6 +31,7 @@ async fn main() -> std::io::Result<()> {
             .service(post_contest)
             .service(get_problems)
             .service(get_problems_id)
+            .service(get_rank)
 
     })
     .bind(("127.0.0.1", 12345))?

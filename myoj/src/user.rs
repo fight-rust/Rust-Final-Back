@@ -26,7 +26,6 @@ struct LoginResponse {
 
 #[post("/api/users/login")]
 async fn user_login(body: web::Json<User>) -> impl Responder {
-
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
    let opts = Opts::from_url(url).unwrap();
    let pool = Pool::new(opts).unwrap();
