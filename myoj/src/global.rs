@@ -23,13 +23,14 @@ pub struct Contest {
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Answer {
-    pub user: usize,
+    pub id:usize,
+    pub user: String,
     pub problem: usize,
-    pub question:usize,
+    pub contest:usize,
     pub result: String,
     pub answer_time: String,
-    pub anaswer_content:String,
-    pub run_time: Vec<u64>,
+    pub content:String,
+    pub run_time: usize,
 } 
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -62,7 +63,7 @@ lazy_static! {
 } // Record the information of all the users
 
 lazy_static! {
-    pub static ref GLOBAL_CONTEST_LIST: Arc<Mutex<Vec<Answer>>>
+    pub static ref ANSWER_LIST: Arc<Mutex<Vec<Answer>>>
         = Arc::new(Mutex::new(Vec::new()));
     // contest_id = 0 means the global ranking list
     // for the basic requirements 5
