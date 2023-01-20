@@ -3,6 +3,7 @@ use actix_web::{get, Responder, HttpResponse, web, post};
 use mysql::prelude::*;
 use mysql::*;
 use crate::global::{Answer,ANSWER_LIST};
+use chrono::{DateTime};
 
 
 pub fn load_answers(){
@@ -60,22 +61,26 @@ async fn get_answers() -> impl Responder {
 
 
 pub fn add_answer(answer:Answer)->bool {
+    println!("a");
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
     let opts = Opts::from_url(url).unwrap();
     let pool = Pool::new(opts).unwrap();
     let mut conn = pool.get_conn().unwrap();
     //添加答题记录
-    let mut x = match "insert into answer_info(contestId,questionId,username,answerTime,answerContent,result,runTime) values (?,?,?,?,?,?,?)"
-        .with((answer.contest,answer.problem, answer.user,answer.answer_time,answer.content,answer.result,answer.run_time))
+    // let answer_time = DateTime::parse_from_rfc3339(&answer.answer_time).unwrap();
+    let mut x = match "insert into answer_info(contestId,questionId,username,answerContent,result,runTime) values (?,?,?,?,?,?)"
+        .with((answer.contest,answer.problem, answer.user,answer.content,answer.result,answer.run_time))
         .run(&mut conn) {
             Ok(res) => {
+                println!("ok");
                 return true
             }
             Err(e) => {
+                println!("{}",e);
                 return false
             }
         };
-        println!("t");
+        
     true
 }
 

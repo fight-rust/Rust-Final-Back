@@ -53,10 +53,17 @@ pub fn init_joblist(){
             run_time:run_time,
         },
     ).expect("Query failed.");
-    *(JOB_LIST.lock().unwrap()) = res;
+    // *(JOB_LIST.lock().unwrap()) = res;
+    let mut job_list = JOB_LIST.lock().unwrap();
+    *job_list = res;
+    let mut job_num = JOB_NUM.lock().unwrap();
+    *job_num = (*(job_list)).len() as u64; 
+    *job_num += 1;
+    drop(job_list);
+    drop(job_num);
 }
 
-#[post("/jobs")]
+#[post("/api/jobs")]
 async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
 
     // let tmp_dir_path: &str = "./target/tmp";
@@ -548,6 +555,7 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     //将job加入job_list
     let mut lock = JOB_LIST.lock().unwrap();
     (*lock).push(job.clone());
+    drop(lock);
 
     // let mut run_time_vec: Vec<u64> = Vec::new();
     // for i in 1..job.cases.len() {
@@ -555,7 +563,7 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     // } // get the RunTime list
 
     //模拟判题过程
-    thread::sleep(Duration::from_secs(5));
+    thread::sleep(Duration::from_secs(1));
 
     //将answer写入数据库
     let mut answer: Answer = Answer::new();
@@ -581,15 +589,22 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     answer.content = body.source_code.clone();
     
     let response = answer.clone();
-    add_answer(answer);
+
 
     //修改job_list状态
     // job.result = String::from("success");
     let mut lock = JOB_LIST.lock().unwrap();
     let mut job_id = job.id as usize;
     job_id -= 1;
-    (*lock)[job_id].result = job.result.clone();
+    println!("222");
+    // job.result = answer.result.clone();
+    // job.run_time = rt;
+
+    (*lock)[job_id].result = answer.result.clone();
     (*lock)[job_id].run_time = rt;
+
+
+
     // (*answer_list).push(Answer {
     //     id: answer_id as usize,
     //     user: body.user_name.clone(),
@@ -601,13 +616,15 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     //     content: body.source_code.clone(),
     // });
 
-
+    
+    add_answer(answer);
+    println!("j");
     // drop(answer_list);
     drop(lock);
     // drop(user_list);
 
     // update_json_file();
 
-    
+    // let response = body.clone();
     HttpResponse::Ok().json(response)
 }
