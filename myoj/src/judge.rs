@@ -5,6 +5,7 @@ use serde::{Serialize, Deserialize};
 use crate::global::{User, USER_LIST, JOB_NUM, 
         JOB_LIST, ANSWER_LIST, Answer, CONTEST_INFO,
         Contest};
+use crate::answer::add_answer;
 use std::fs;
 use std::io::Write;
 use std::process::{Command, Stdio};
@@ -22,7 +23,7 @@ use mysql::*;
 
 #[derive(Clone, Deserialize, Serialize, Default, Debug)]
 pub struct PostJob {
-    // pub source_code: String,
+    pub source_code: String,
     // pub language: String,
     // pub user_id: usize,
     pub user_name: String,
@@ -507,13 +508,9 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     //     });
     // } // remove the temporary directory
     
-
-    //模拟判题过程
-    thread::sleep(Duration::from_secs(5));
-
     //job赋值
-    job.result = String::from("success");
-    job.content = String::from("abc");
+    job.result = String::from("compiling");
+    // job.content = String::from("abc");
     job.updated_time = Utc::now().
         to_rfc3339_opts(SecondsFormat::Millis, true);
     // generate the updated time
@@ -527,22 +524,43 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     //     run_time_vec.push(job.cases[i].time.clone());
     // } // get the RunTime list
 
+    //模拟判题过程
+    thread::sleep(Duration::from_secs(5));
 
-    //判题完成后将结果加入answer列表
-    let mut answer_list = ANSWER_LIST.lock().unwrap();
-    let answer_id = answer_list.len();
-    (*answer_list).push(Answer {
-        id: answer_id as usize,
-        user: body.user_name.clone(),
-        problem: body.problem_id as usize,
-        contest: body.contest_id as usize,
-        result: job.result.clone(),
-        answer_time: job.updated_time.clone(),
-        run_time: 100 as usize,
-        content: job.content.clone(),
-    });
+    //修改job_list状态
+    job.result = String::from("success");
+    let mut lock = JOB_LIST.lock().unwrap();
+    let mut job_id = job.id as usize;
+    job_id -= 1;
+    (*lock)[job_id].result = job.result.clone();
 
-    drop(answer_list);
+    //将answer写入数据库
+    let mut answer: Answer = Answer::new();
+    // let mut answer_list = ANSWER_LIST.lock().unwrap();
+    // let answer_id = answer_list.len();
+    // answer.id = answer_id as usize;
+    answer.user = body.user_name.clone();
+    answer.problem = body.problem_id as usize;
+    answer.contest = body.contest_id as usize;
+    answer.result = job.result.clone();
+    answer.answer_time = job.created_time.clone();
+    answer.run_time = 100 as usize;
+    answer.content = body.source_code.clone();
+    add_answer(answer);
+
+    // (*answer_list).push(Answer {
+    //     id: answer_id as usize,
+    //     user: body.user_name.clone(),
+    //     problem: body.problem_id as usize,
+    //     contest: body.contest_id as usize,
+    //     result: job.result.clone(),
+    //     answer_time: job.created_time.clone(),
+    //     run_time: 100 as usize,
+    //     content: body.source_code.clone(),
+    // });
+
+
+    // drop(answer_list);
     drop(lock);
     // drop(user_list);
 
