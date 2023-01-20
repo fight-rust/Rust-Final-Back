@@ -1,7 +1,8 @@
 use std::sync::{Arc, Mutex};
 use lazy_static::lazy_static;
-// use crate::response::Response;
+use crate::job::Job;
 use serde::{Serialize, Deserialize};
+
 
 //结构体
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -48,10 +49,10 @@ lazy_static! {
         Arc::new(Mutex::new(0));
 } // record the serial number of judge jobs
 
-// lazy_static! {
-//     pub static ref JOB_LIST: Arc<Mutex<Vec<Response>>>
-//         = Arc::new(Mutex::new(Vec::new()));
-// } // Record all the judge jobs submitted
+lazy_static! {
+    pub static ref JOB_LIST: Arc<Mutex<Vec<Job>>>
+        = Arc::new(Mutex::new(Vec::new()));
+} // Record all the judge jobs submitted
 
 lazy_static! {
     pub static ref USER_LIST: Arc<Mutex<Vec<User>>>
