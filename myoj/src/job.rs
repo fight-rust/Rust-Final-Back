@@ -101,4 +101,3 @@ pub struct CaseResult {
     pub memory: u64,
     pub info: String,
 }
-

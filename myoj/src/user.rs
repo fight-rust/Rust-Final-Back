@@ -10,6 +10,13 @@ use mysql::*;
 struct User {
     pub username: String,
     pub password: String,
+    pub radio:String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+struct LoginUser {
+    pub username: String,
+    pub password: String,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -25,7 +32,7 @@ struct LoginResponse {
 
 
 #[post("/api/users/login")]
-async fn user_login(body: web::Json<User>) -> impl Responder {
+async fn user_login(body: web::Json<LoginUser>) -> impl Responder {
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
    let opts = Opts::from_url(url).unwrap();
    let pool = Pool::new(opts).unwrap();
@@ -66,6 +73,7 @@ async fn user_login(body: web::Json<User>) -> impl Responder {
 
 #[post("/api/users/register")]
 async fn user_register(body: web::Json<User>) -> impl Responder {
+    println!("user_register");
    let url = "mysql://root:123456@127.0.0.1:3306/oj";
    let opts = Opts::from_url(url).unwrap();
    let pool = Pool::new(opts).unwrap();
@@ -102,7 +110,9 @@ async fn user_register(body: web::Json<User>) -> impl Responder {
         query.push_str(&body.username);
         query.push_str("','");
         query.push_str(&body.password);
-        query.push_str("',0)");
+        query.push_str("',");
+        query.push_str(&body.radio);
+        query.push_str(",0)");
         conn.query_iter(query).unwrap();
 
         let response=Response{

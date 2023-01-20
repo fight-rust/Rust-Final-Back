@@ -159,4 +159,3 @@ async fn get_jobs() -> impl Responder {
 
 //     HttpResponse::Ok().json(response)
 // }
-
