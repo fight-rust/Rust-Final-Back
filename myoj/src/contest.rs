@@ -11,6 +11,20 @@ struct Response {
     ptitle:Vec<String>
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+struct ContestList {
+    cid:Vec<i32>,
+    ctitle:Vec<String>
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+struct ContestCreate {
+    problem:Vec<i32>,
+    startTime:String,
+    endTime:String,
+    title:String
+}
+
 pub fn load_contests() {
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
     let opts = Opts::from_url(url).unwrap();
@@ -126,6 +140,86 @@ async fn admin_get_contests()->impl Responder{
         ptitle:ptitle
     };
     HttpResponse::Ok().json(response)
+}
+
+#[get("/api/admin/contest/get-contest-list")]
+async fn admin_get_contests_list()->impl Responder{
+    let url = "mysql://root:123456@127.0.0.1:3306/oj";
+    let opts = Opts::from_url(url).unwrap();
+    let pool = Pool::new(opts).unwrap();
+    let mut conn = pool.get_conn().unwrap();
+ 
+    let mut query="select contestId,contestTitle from contest_info".to_owned();
+    let mut cid:Vec<i32>=Vec::new();
+    let mut ctitle:Vec<String>=Vec::new();
+ 
+   conn.query_iter(query)
+   .unwrap()
+   .for_each(|row| {
+     cid.push(row.as_ref().unwrap().get(0).unwrap());
+     ctitle.push(row.unwrap().get(1).unwrap());
+ 
+   });
+ 
+     let response=ContestList{
+         cid:cid,
+         ctitle:ctitle
+     };
+     HttpResponse::Ok().json(response)
+}
+
+#[post("/api/admin/contest")]
+async fn admin_add_contest(body: web::Json<ContestCreate>)->impl Responder{
+    let url = "mysql://root:123456@127.0.0.1:3306/oj";
+    let opts = Opts::from_url(url).unwrap();
+    let pool = Pool::new(opts).unwrap();
+    let mut conn = pool.get_conn().unwrap();
+ 
+    let mut query="insert into contest_info values(NULL,'".to_owned();
+    query.push_str(&body.title);
+    query.push_str("','111','");
+    query.push_str(&body.startTime);
+    query.push_str("','");
+    query.push_str(&body.endTime);
+    query.push_str("')");
+    println!("{}",query);
+ 
+   conn.query_iter(query)
+   .unwrap()
+   .for_each(|row| {
+     row.ok();
+   });
+
+   query="select contestId from contest_info where contestTitle='".to_owned();
+    query.push_str(&body.title);
+    query.push_str("'");
+    println!("{}",query);
+
+    let mut id=1;
+ 
+   conn.query_iter(query)
+   .unwrap()
+   .for_each(|row| {
+    id=row.unwrap().get(0).unwrap();
+   });
+
+   for i in 0..body.problem.len(){
+    query="insert into contest_question values(".to_owned();
+    query.push_str(id.to_string().as_str());
+    query.push_str(",");
+    query.push_str(&body.problem[i].to_string());
+    query.push_str(")");
+    println!("{}",query);
+ 
+   conn.query_iter(query)
+   .unwrap()
+   .for_each(|row| {
+    row.ok();
+   });
+   }
+
+
+    HttpResponse::Ok()
 }
 
 #[post("/api/addContest")]

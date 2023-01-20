@@ -12,8 +12,9 @@ use crate::contest::get_contests;
 use crate::contest::get_contests_id;
 use crate::contest::post_contest;
 use crate::contest::admin_get_contests;
+use crate::contest::admin_get_contests_list;
+use crate::contest::admin_add_contest;
 use crate::answer::get_answers;
-
 
 mod user;
 mod test;
@@ -41,6 +42,8 @@ async fn main() -> std::io::Result<()> {
             .service(get_problems_id)
             .service(get_rank)
             .service(get_answers)
+            .service(admin_get_contests_list)
+            .service(admin_add_contest)
             .service(post_jobs)
 
     })

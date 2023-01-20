@@ -3,7 +3,6 @@ use lazy_static::lazy_static;
 use crate::job::Job;
 use serde::{Serialize, Deserialize};
 
-
 //结构体
 #[derive(Serialize, Deserialize, Clone, Default)]
 pub struct User {
