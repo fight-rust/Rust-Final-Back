@@ -11,7 +11,7 @@
  Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 20/01/2023 03:08:37
+ Date: 20/01/2023 19:57:08
 */
 
 SET NAMES utf8mb4;
@@ -56,7 +56,7 @@ CREATE TABLE `contest_info`  (
   PRIMARY KEY (`contestId`) USING BTREE,
   INDEX `username`(`username` ASC) USING BTREE,
   CONSTRAINT `contest_info_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user_info` (`username`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 905 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of contest_info
@@ -64,7 +64,10 @@ CREATE TABLE `contest_info`  (
 INSERT INTO `contest_info` VALUES (1, 'test', '111', '2022-12-28 20:25:40', '2023-01-12 20:25:42');
 INSERT INTO `contest_info` VALUES (2, 'abc', '111', '2022-12-29 20:25:54', '2023-01-08 20:25:58');
 INSERT INTO `contest_info` VALUES (3, 'test24', '111', '2002-02-01 00:00:00', '2002-02-19 00:00:00');
-INSERT INTO `contest_info` VALUES (904, '67567', '111', '2002-02-01 00:00:00', '2002-02-19 00:00:00');
+INSERT INTO `contest_info` VALUES (4, '67567', '111', '2002-02-01 00:00:00', '2002-02-19 00:00:00');
+INSERT INTO `contest_info` VALUES (5, 'hjvh', '111', '2023-01-03 00:00:00', '2023-01-18 00:00:00');
+INSERT INTO `contest_info` VALUES (6, 'sadsad', '111', '2023-01-03 00:00:00', '2023-01-13 00:00:00');
+INSERT INTO `contest_info` VALUES (7, 'i am a contest', '111', '2023-01-01 00:00:00', '2023-01-31 00:00:00');
 
 -- ----------------------------
 -- Table structure for contest_question
@@ -74,8 +77,7 @@ CREATE TABLE `contest_question`  (
   `contestId` int NOT NULL,
   `questionId` int NOT NULL,
   INDEX `contestId`(`contestId` ASC) USING BTREE,
-  INDEX `questionId`(`questionId` ASC) USING BTREE,
-  CONSTRAINT `contest_question_ibfk_2` FOREIGN KEY (`questionId`) REFERENCES `question_info` (`questionId`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  INDEX `questionId`(`questionId` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -84,6 +86,15 @@ CREATE TABLE `contest_question`  (
 INSERT INTO `contest_question` VALUES (1, 2);
 INSERT INTO `contest_question` VALUES (2, 1);
 INSERT INTO `contest_question` VALUES (2, 4);
+INSERT INTO `contest_question` VALUES (5, 1);
+INSERT INTO `contest_question` VALUES (5, 2);
+INSERT INTO `contest_question` VALUES (5, 3);
+INSERT INTO `contest_question` VALUES (6, 1);
+INSERT INTO `contest_question` VALUES (6, 2);
+INSERT INTO `contest_question` VALUES (6, 4);
+INSERT INTO `contest_question` VALUES (7, 3);
+INSERT INTO `contest_question` VALUES (7, 4);
+INSERT INTO `contest_question` VALUES (7, 5);
 
 -- ----------------------------
 -- Table structure for question_info
@@ -104,7 +115,7 @@ INSERT INTO `question_info` VALUES (1, 'q1', 'afdsaf', '2321');
 INSERT INTO `question_info` VALUES (2, 'q2', 'agdvafas', '234234');
 INSERT INTO `question_info` VALUES (3, 'q3', 'dsgdfgasfd', '43342');
 INSERT INTO `question_info` VALUES (4, 'q4', 'ewrfsad', '43523');
-INSERT INTO `question_info` VALUES (9, 'q5', 'dfdsfdsfds', 'dsfsdfsd');
+INSERT INTO `question_info` VALUES (5, 'q5', 'dfdsfdsfds', 'dsfsdfsd');
 
 -- ----------------------------
 -- Table structure for user_info
