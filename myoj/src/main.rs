@@ -4,6 +4,9 @@ use problem::get_problems;
 use problem::get_problems_id;
 use problem::load_problems;
 use judge::post_jobs;
+use judge::init_joblist;
+use job::Job;
+use job::get_jobs;
 
 use crate::user::user_login;
 use crate::user::user_register;
@@ -15,6 +18,7 @@ use crate::contest::admin_get_contests;
 use crate::contest::admin_get_contests_list;
 use crate::contest::admin_add_contest;
 use crate::answer::get_answers;
+use crate::global::{JOB_LIST};
 
 mod user;
 mod test;
@@ -29,6 +33,7 @@ mod job;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    init_joblist();
     HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
@@ -44,6 +49,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_answers)
             .service(admin_get_contests_list)
             .service(admin_add_contest)
+            .service(get_jobs)
             .service(post_jobs)
 
     })

@@ -19,6 +19,7 @@ use wait_timeout::ChildExt;
 // use crate::persistent_storage::update_json_file;
 use mysql::prelude::*;
 use mysql::*;
+use rand::Rng;
 
 
 #[derive(Clone, Deserialize, Serialize, Default, Debug)]
@@ -29,6 +30,30 @@ pub struct PostJob {
     pub user_name: String,
     pub contest_id: usize,
     pub problem_id: usize,
+}
+
+//初始化joblist
+pub fn init_joblist(){
+    let url = "mysql://root:123456@127.0.0.1:3306/oj";
+    let opts = Opts::from_url(url).unwrap();
+    let pool = Pool::new(opts).unwrap();
+    let mut conn = pool.get_conn().unwrap();
+    let query = "select * from answer_info";
+    
+   let res= conn.query_map(
+        query,
+        |(id,contest, problem,user, answer_time, content,result,run_time)| Job {
+            id:id,
+            user: user,
+            problem: problem,
+            contest: contest,
+            result: result,
+            created_time:answer_time,
+            content:content,
+            run_time:run_time,
+        },
+    ).expect("Query failed.");
+    *(JOB_LIST.lock().unwrap()) = res;
 }
 
 #[post("/jobs")]
@@ -509,11 +534,16 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     // } // remove the temporary directory
     
     //job赋值
-    job.result = String::from("compiling");
+    job.result = String::from("Compiling");
     // job.content = String::from("abc");
-    job.updated_time = Utc::now().
-        to_rfc3339_opts(SecondsFormat::Millis, true);
+    // job.updated_time = Utc::now().
+    //     to_rfc3339_opts(SecondsFormat::Millis, true);
     // generate the updated time
+    job.user = body.user_name.clone();
+    job.problem = body.problem_id as usize;
+    job.contest = body.contest_id as usize;
+    job.run_time = 0 as usize;
+    job.content = body.source_code.clone();
 
     //将job加入job_list
     let mut lock = JOB_LIST.lock().unwrap();
@@ -527,13 +557,6 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     //模拟判题过程
     thread::sleep(Duration::from_secs(5));
 
-    //修改job_list状态
-    job.result = String::from("success");
-    let mut lock = JOB_LIST.lock().unwrap();
-    let mut job_id = job.id as usize;
-    job_id -= 1;
-    (*lock)[job_id].result = job.result.clone();
-
     //将answer写入数据库
     let mut answer: Answer = Answer::new();
     // let mut answer_list = ANSWER_LIST.lock().unwrap();
@@ -542,12 +565,31 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     answer.user = body.user_name.clone();
     answer.problem = body.problem_id as usize;
     answer.contest = body.contest_id as usize;
-    answer.result = job.result.clone();
+    // answer.result = job.result.clone();
     answer.answer_time = job.created_time.clone();
-    answer.run_time = 100 as usize;
+    let mut rng = rand::thread_rng();
+    let mut t = rng.gen::<f64>();
+    // let mut t:usize = med as usize;
+    let mut rt = (t*1000.0+200.0) as usize;
+    answer.run_time = rt;
+    if(rt > 1000){
+        answer.result = String::from("Time Limit Exceeded");
+    }
+    else{
+        answer.result = String::from("Answer Correct");
+    }
     answer.content = body.source_code.clone();
+    
+    let response = answer.clone();
     add_answer(answer);
 
+    //修改job_list状态
+    // job.result = String::from("success");
+    let mut lock = JOB_LIST.lock().unwrap();
+    let mut job_id = job.id as usize;
+    job_id -= 1;
+    (*lock)[job_id].result = job.result.clone();
+    (*lock)[job_id].run_time = rt;
     // (*answer_list).push(Answer {
     //     id: answer_id as usize,
     //     user: body.user_name.clone(),
@@ -566,6 +608,6 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
 
     // update_json_file();
 
-    let response = job.clone();
+    
     HttpResponse::Ok().json(response)
 }
