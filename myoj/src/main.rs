@@ -19,6 +19,7 @@ use crate::contest::admin_get_contests;
 use crate::contest::admin_get_contests_list;
 use crate::contest::admin_add_contest;
 use crate::contest::admin_delete_contests;
+use crate::problem::admin_add_problem;
 use crate::answer::get_answers;
 use crate::global::{JOB_LIST};
 
@@ -57,6 +58,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_jobs)
             .service(post_jobs)
             .service(get_filter_jobs)
+            .service(admin_add_problem)
 
     })
     .bind(("127.0.0.1", 12345))?

@@ -11,7 +11,7 @@
  Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 20/01/2023 19:57:08
+ Date: 21/01/2023 16:51:36
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,7 @@ CREATE TABLE `answer_info`  (
   `contestId` int NOT NULL,
   `questionId` int NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `answerTime` varchar(255) NULL DEFAULT NULL,
+  `answerTime` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `answerContent` varchar(15000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `result` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `runTime` float NULL DEFAULT NULL,
@@ -34,7 +34,6 @@ CREATE TABLE `answer_info`  (
   INDEX `contestId`(`contestId` ASC) USING BTREE,
   INDEX `questionId`(`questionId` ASC) USING BTREE,
   INDEX `username`(`username` ASC) USING BTREE,
-  CONSTRAINT `answer_info_ibfk_2` FOREIGN KEY (`questionId`) REFERENCES `question_info` (`questionId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `answer_info_ibfk_3` FOREIGN KEY (`username`) REFERENCES `user_info` (`username`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
@@ -42,6 +41,7 @@ CREATE TABLE `answer_info`  (
 -- Records of answer_info
 -- ----------------------------
 INSERT INTO `answer_info` VALUES (1, 1, 2, 'aa12', '2023-01-27 20:29:34', 'abc', 'Answer Correct', 220);
+INSERT INTO `answer_info` VALUES (2, 0, 4, 'aa12', '2023-01-21T07:29:10.256Z', 'sadas', 'Compilation Error', 280);
 
 -- ----------------------------
 -- Table structure for contest_info
@@ -68,6 +68,9 @@ INSERT INTO `contest_info` VALUES (4, '67567', '111', '2002-02-01 00:00:00', '20
 INSERT INTO `contest_info` VALUES (5, 'hjvh', '111', '2023-01-03 00:00:00', '2023-01-18 00:00:00');
 INSERT INTO `contest_info` VALUES (6, 'sadsad', '111', '2023-01-03 00:00:00', '2023-01-13 00:00:00');
 INSERT INTO `contest_info` VALUES (7, 'i am a contest', '111', '2023-01-01 00:00:00', '2023-01-31 00:00:00');
+INSERT INTO `contest_info` VALUES (13, 'test101', '111', '2023-01-05 00:00:00', '2023-01-17 00:00:00');
+INSERT INTO `contest_info` VALUES (906, 'test101', '111', '2023-01-04 00:00:00', '2023-01-26 00:00:00');
+INSERT INTO `contest_info` VALUES (907, 'test101', '111', '2023-01-04 00:00:00', '2023-01-18 00:00:00');
 
 -- ----------------------------
 -- Table structure for contest_question
@@ -95,13 +98,19 @@ INSERT INTO `contest_question` VALUES (6, 4);
 INSERT INTO `contest_question` VALUES (7, 3);
 INSERT INTO `contest_question` VALUES (7, 4);
 INSERT INTO `contest_question` VALUES (7, 5);
+INSERT INTO `contest_question` VALUES (13, 1);
+INSERT INTO `contest_question` VALUES (13, 2);
+INSERT INTO `contest_question` VALUES (13, 3);
+INSERT INTO `contest_question` VALUES (906, 1);
+INSERT INTO `contest_question` VALUES (906, 2);
+INSERT INTO `contest_question` VALUES (907, 1);
 
 -- ----------------------------
 -- Table structure for question_info
 -- ----------------------------
 DROP TABLE IF EXISTS `question_info`;
 CREATE TABLE `question_info`  (
-  `questionId` int NOT NULL,
+  `questionId` int NOT NULL AUTO_INCREMENT,
   `questionTitle` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `questionContent` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `questionExample` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,

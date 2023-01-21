@@ -140,7 +140,7 @@ async fn get_contests_id(path: web::Path<usize>) -> impl Responder {
     let contest_id: usize = path.into_inner();
     let contest_lock: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
     let contest_info: Vec<Contest> = (*contest_lock).clone();
-   
+    
     let mut i=0;
     while i<contest_info.len()
     {
