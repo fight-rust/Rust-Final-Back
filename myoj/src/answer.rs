@@ -26,7 +26,10 @@ pub fn load_answers(){
             run_time:run_time
         },
     ).expect("Query failed.");
-    *(ANSWER_LIST.lock().unwrap()) = res;
+    // *(ANSWER_LIST.lock().unwrap()) = res;
+    let mut answer_list = ANSWER_LIST.lock().unwrap();
+    *answer_list = res;
+    drop(answer_list);
 }
 
 #[get("/api/answers")]

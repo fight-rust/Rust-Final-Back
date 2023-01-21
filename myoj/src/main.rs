@@ -7,6 +7,7 @@ use judge::post_jobs;
 use judge::init_joblist;
 use job::Job;
 use job::get_jobs;
+use task::get_filter_jobs;
 
 use crate::user::user_login;
 use crate::user::user_register;
@@ -29,6 +30,7 @@ mod rank;
 mod answer;
 mod judge;
 mod job;
+mod task;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -51,6 +53,7 @@ async fn main() -> std::io::Result<()> {
             .service(admin_add_contest)
             .service(get_jobs)
             .service(post_jobs)
+            .service(get_filter_jobs)
 
     })
     .bind(("127.0.0.1", 12345))?
