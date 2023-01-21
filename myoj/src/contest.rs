@@ -198,6 +198,7 @@ async fn admin_get_contests_list()->impl Responder{
 
 #[post("/api/admin/contest")]
 async fn admin_add_contest(body: web::Json<ContestCreate>)->impl Responder{
+    println!("111");
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
     let opts = Opts::from_url(url).unwrap();
     let pool = Pool::new(opts).unwrap();

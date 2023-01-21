@@ -34,7 +34,6 @@ pub fn load_problems() ->Vec<Problem>{
 #[get("/api/problems")]
 async fn get_problems() -> impl Responder {
     let response = load_problems();
-    // update_json_file();
     HttpResponse::Ok().json(response)
 }
 
@@ -63,7 +62,21 @@ async fn admin_add_problem(body: web::Json<NewProblem>) -> impl Responder {
    let pool = Pool::new(opts).unwrap();
    let mut conn = pool.get_conn().unwrap();
     
-   let mut query="insert into question_info values(NULL,'".to_owned();
+    let mut max=0;
+
+    let mut query="select questionId from question_info".to_owned();
+
+    conn.query_iter(query)
+       .unwrap()
+       .for_each(|row| {
+            max=row.unwrap().get(0).unwrap();
+       });
+
+    max=max+1;
+
+   query="insert into question_info values(".to_owned();
+   query.push_str(&max.to_string());
+   query.push_str(",'");
    query.push_str(&body.title);
    query.push_str("','");
    query.push_str(&body.content);
