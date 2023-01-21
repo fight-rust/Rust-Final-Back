@@ -2,6 +2,7 @@ use actix_web::{post, web, Responder, HttpResponse};
 use serde::{Serialize, Deserialize};
 use crate::global::{JOB_NUM, JOB_LIST, Answer};
 use crate::answer::add_answer;
+use crate::rank::update;
 use crate::job::{Job};
 use std::time::{Duration};
 use std::{thread,};
@@ -102,6 +103,8 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     }
     else{
         answer.result = String::from("Answer Correct");
+        update(body.user_name.clone());
+
     }
     answer.content = body.source_code.clone();
     

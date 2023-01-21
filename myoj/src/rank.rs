@@ -29,7 +29,7 @@ fn bubble_sort(vec: &mut Vec<i32>,tag:&mut Vec<String>) {
     }
 }
 
-fn update(username: String){
+pub fn update(username: String){
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
     let opts = Opts::from_url(url).unwrap();
     let pool = Pool::new(opts).unwrap();
