@@ -30,6 +30,16 @@ struct LoginResponse {
     ismanager:i32
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+struct AcNumName {
+    username:String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+struct AcNum {
+    total_ac:i32,
+}
+
 
 #[post("/api/users/login")]
 async fn user_login(body: web::Json<LoginUser>) -> impl Responder {
@@ -73,7 +83,6 @@ async fn user_login(body: web::Json<LoginUser>) -> impl Responder {
 
 #[post("/api/users/register")]
 async fn user_register(body: web::Json<User>) -> impl Responder {
-    println!("user_register");
    let url = "mysql://root:123456@127.0.0.1:3306/oj";
    let opts = Opts::from_url(url).unwrap();
    let pool = Pool::new(opts).unwrap();
@@ -119,7 +128,31 @@ async fn user_register(body: web::Json<User>) -> impl Responder {
             response:String::from(&body.username)
         };
         HttpResponse::Ok().json(response)
-    }
-    
-    
+    }    
+}
+
+#[post("/api/totalacnum")]
+async fn get_ac_num(body: web::Json<AcNumName>) -> impl Responder {
+    println!("get_ac_num");
+    let url = "mysql://root:123456@127.0.0.1:3306/oj";
+   let opts = Opts::from_url(url).unwrap();
+   let pool = Pool::new(opts).unwrap();
+   let mut conn = pool.get_conn().unwrap();
+
+   let mut query="select acnums from user_info where username='".to_owned();
+   query.push_str(&body.username);
+   query.push_str("'");
+
+    let mut total_ac=0;
+
+   conn.query_iter(query)
+       .unwrap()
+       .for_each(|row| {
+           total_ac=row.unwrap().get(0).unwrap();
+       });
+
+       let response=AcNum{
+        total_ac:total_ac
+    };
+    HttpResponse::Ok().json(response)
 }

@@ -9,6 +9,7 @@ use task::get_filter_jobs;
 
 use crate::user::user_login;
 use crate::user::user_register;
+use crate::user::get_ac_num;
 use crate::rank::get_rank;
 use crate::contest::get_contests;
 use crate::contest::get_contests_id;
@@ -56,6 +57,7 @@ async fn main() -> std::io::Result<()> {
             .service(post_jobs)
             .service(get_filter_jobs)
             .service(admin_add_problem)
+            .service(get_ac_num)
 
     })
     .bind(("127.0.0.1", 12345))?

@@ -29,6 +29,41 @@ fn bubble_sort(vec: &mut Vec<i32>,tag:&mut Vec<String>) {
     }
 }
 
+fn update(username: String){
+    let url = "mysql://root:123456@127.0.0.1:3306/oj";
+    let opts = Opts::from_url(url).unwrap();
+    let pool = Pool::new(opts).unwrap();
+    let mut conn = pool.get_conn().unwrap();
+
+    let mut query="select acnums from user_info where username='".to_owned();
+    query.push_str(username.as_str());
+    query.push_str("'");
+
+    let mut acnums=0;
+
+   conn.query_iter(query)
+   .unwrap()
+   .for_each(|row| {
+        acnums=row.unwrap().get(0).unwrap();
+   });
+
+   acnums=acnums+1;
+
+   query="update user_info set acnums=".to_owned();
+    query.push_str(&acnums.to_string());
+    query.push_str(" where username='");
+    query.push_str(username.as_str());
+    query.push_str("'");
+
+   conn.query_iter(query)
+   .unwrap()
+   .for_each(|row| {
+        row.ok();
+   });
+
+
+}
+
 
 #[get("/api/rank/list")]
 async fn get_rank() -> impl Responder {
