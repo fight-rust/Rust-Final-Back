@@ -563,7 +563,7 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     // } // get the RunTime list
 
     //模拟判题过程
-    thread::sleep(Duration::from_secs(1));
+    thread::sleep(Duration::from_secs(3));
 
     //将answer写入数据库
     let mut answer: Answer = Answer::new();
@@ -582,6 +582,15 @@ async fn post_jobs(body: web::Json<PostJob>) -> impl Responder {
     answer.run_time = rt;
     if(rt > 1000){
         answer.result = String::from("Time Limit Exceeded");
+    }
+    else if(rt <= 200){
+        answer.result = String::from("Memory Limit Exceeded");
+    }
+    else if(rt > 200 && rt <= 400){
+        answer.result = String::from("Compilation Error");
+    }
+    else if(rt > 400 && rt <= 600){
+        answer.result = String::from("Wrong Answer");
     }
     else{
         answer.result = String::from("Answer Correct");

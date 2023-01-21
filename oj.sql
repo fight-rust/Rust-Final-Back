@@ -26,7 +26,7 @@ CREATE TABLE `answer_info`  (
   `contestId` int NOT NULL,
   `questionId` int NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `answerTime` datetime NULL DEFAULT NULL,
+  `answerTime` varchar(255) NULL DEFAULT NULL,
   `answerContent` varchar(15000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `result` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `runTime` float NULL DEFAULT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `answer_info`  (
 -- ----------------------------
 -- Records of answer_info
 -- ----------------------------
-INSERT INTO `answer_info` VALUES (1, 1, 2, 'aa12', '2023-01-27 20:29:34', NULL, 'success', 220);
+INSERT INTO `answer_info` VALUES (1, 1, 2, 'aa12', '2023-01-27 20:29:34', 'abc', 'Answer Correct', 220);
 
 -- ----------------------------
 -- Table structure for contest_info

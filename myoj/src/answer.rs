@@ -71,8 +71,8 @@ pub fn add_answer(answer:Answer)->bool {
     let mut conn = pool.get_conn().unwrap();
     //添加答题记录
     // let answer_time = DateTime::parse_from_rfc3339(&answer.answer_time).unwrap();
-    let mut x = match "insert into answer_info(contestId,questionId,username,answerContent,result,runTime) values (?,?,?,?,?,?)"
-        .with((answer.contest,answer.problem, answer.user,answer.content,answer.result,answer.run_time))
+    let mut x = match "insert into answer_info(contestId,questionId,username,answerTime,answerContent,result,runTime) values (?,?,?,?,?,?,?)"
+        .with((answer.contest,answer.problem, answer.user,answer.answer_time,answer.content,answer.result,answer.run_time))
         .run(&mut conn) {
             Ok(res) => {
                 println!("ok");
