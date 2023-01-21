@@ -18,6 +18,7 @@ use crate::contest::post_contest;
 use crate::contest::admin_get_contests;
 use crate::contest::admin_get_contests_list;
 use crate::contest::admin_add_contest;
+use crate::contest::admin_delete_contests;
 use crate::answer::get_answers;
 use crate::global::{JOB_LIST};
 
@@ -52,6 +53,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_answers)
             .service(admin_get_contests_list)
             .service(admin_add_contest)
+            .service(admin_delete_contests)
             .service(get_jobs)
             .service(post_jobs)
             .service(get_filter_jobs)

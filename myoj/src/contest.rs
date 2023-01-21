@@ -25,7 +25,12 @@ struct ContestCreate {
     title:String
 }
 
-pub fn load_contests(){
+#[derive(Serialize, Deserialize, Clone)]
+struct DeleteContest {
+    deleteid:Vec<i32>,
+}
+
+pub fn load_contests() {
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
     let opts = Opts::from_url(url).unwrap();
     let pool = Pool::new(opts).unwrap();
@@ -99,15 +104,15 @@ async fn get_contests() -> impl Responder {
     // let contest_lock: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
     // let response: Vec<Contest> = (*contest_lock).clone();
     // drop(contest_lock);
-    // // update_json_file();
-    // HttpResponse::Ok().json(response);
+    // update_json_file();
+    // HttpResponse::Ok().json(response)
 
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
     let opts = Opts::from_url(url).unwrap();
     let pool = Pool::new(opts).unwrap();
     let mut conn = pool.get_conn().unwrap();
     let query = "select * from contest_info";
-    
+
     let mut res = conn.query_map(
         query,
         |(id, name, user, start_time, end_time)| Contest {
@@ -119,7 +124,7 @@ async fn get_contests() -> impl Responder {
             problem_ids: Vec::new(),
         },
     ).expect("Query failed.");
-   
+
     for mut r in &mut res{
         let mut  query = "select questionId from contest_question where contestId=".to_owned();
         query.push_str(r.id.to_string().as_str());
@@ -262,6 +267,38 @@ async fn admin_add_contest(body: web::Json<ContestCreate>)->impl Responder{
     HttpResponse::Ok()
 }
 
+#[post("/api/admin/contestdelete")]
+async fn admin_delete_contests(body: web::Json<DeleteContest>) -> impl Responder{
+    let url = "mysql://root:123456@127.0.0.1:3306/oj";
+    let opts = Opts::from_url(url).unwrap();
+    let pool = Pool::new(opts).unwrap();
+    let mut conn = pool.get_conn().unwrap();
+
+    println!("success accept");
+
+    for i in 0..body.deleteid.len(){
+        let mut query="delete from contest_info where contestId=".to_owned();
+        query.push_str(&body.deleteid[i].to_string());
+
+        conn.query_iter(query)
+        .unwrap()
+        .for_each(|row| {
+            row.ok();
+        });
+
+        query="delete from contest_question where contestId=".to_owned();
+        query.push_str(&body.deleteid[i].to_string());
+
+        conn.query_iter(query)
+        .unwrap()
+        .for_each(|row| {
+            row.ok();
+        });
+    }
+ 
+    HttpResponse::Ok() 
+}
+
 #[post("/api/addContest")]
 async fn post_contest(body: web::Json<Contest>) -> impl Responder {
 
@@ -307,5 +344,4 @@ async fn post_contest(body: web::Json<Contest>) -> impl Responder {
         else {
             return HttpResponse::ExpectationFailed().json("数据库添加失败".to_string());
         }
-       
 }
