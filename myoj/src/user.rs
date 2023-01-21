@@ -44,27 +44,27 @@ async fn user_login(body: web::Json<LoginUser>) -> impl Responder {
    query.push_str(&body.password);
    query.push_str("'");
 
-    let mut isexist=0;
-    let mut isManager:Option<i32>=Some(0);
+    let mut is_exist=0;
+    let mut is_manager:Option<i32>=Some(0);
 
    conn.query_iter(query)
        .unwrap()
        .for_each(|row| {
-            isManager=row.unwrap().get(2);
-           isexist=1;
+            is_manager=row.unwrap().get(2);
+           is_exist=1;
        });
 
-    if isexist == 1{
+    if is_exist == 1{
         let response=LoginResponse{
             response:String::from(&body.username),
-            ismanager:isManager.unwrap()
+            ismanager:is_manager.unwrap()
         };
         HttpResponse::Ok().json(response)
     }
     else{
         let response=LoginResponse{
             response:String::from("fail"),
-            ismanager:isManager.unwrap()
+            ismanager:is_manager.unwrap()
         };
         HttpResponse::Ok().json(response)
     }

@@ -20,8 +20,8 @@ struct ContestList {
 #[derive(Serialize, Deserialize, Clone)]
 struct ContestCreate {
     problem:Vec<i32>,
-    startTime:String,
-    endTime:String,
+    start_time:String,
+    end_time:String,
     title:String
 }
 
@@ -52,15 +52,11 @@ pub fn load_contests() {
     for mut r in &mut res{
         let mut  query = "select questionId from contest_question where contestId=".to_owned();
         query.push_str(r.id.to_string().as_str());
-        // println!("{:?}",query);
         let t:Vec<usize> = conn.query(query).unwrap();
         (*r).problem_ids=t;
     }
     
     *(CONTEST_INFO.lock().unwrap()) = res;
-    // let mut contest_list = CONTEST_INFO.lock().unwrap();
-    // *contest_list = res;
-    // drop(contest_list);
 }
 
 pub fn add_contest(contest:Contest) ->bool {
@@ -72,10 +68,10 @@ pub fn add_contest(contest:Contest) ->bool {
     let mut x = match "insert into contest_info values (?,?,?,?,?)"
             .with((contest.id,contest.title, contest.user,contest.start_time,contest.end_time))
             .run(&mut conn) {
-            Ok(res) => {
+            Ok(_res) => {
                 true
             }
-            Err(e) => {
+            Err(_e) => {
                 return false
             }
         };
@@ -86,7 +82,7 @@ pub fn add_contest(contest:Contest) ->bool {
         x = match "insert into contest_question values (?,?)"
                      .with((contest.id,p))
                     .run(&mut conn) {
-                     Ok(res) => {
+                     Ok(_res) => {
                         true
                         }
                      Err(e) => {
@@ -100,13 +96,6 @@ pub fn add_contest(contest:Contest) ->bool {
 
 #[get("/api/contests")]
 async fn get_contests() -> impl Responder {
-    // load_contests();
-    // let contest_lock: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
-    // let response: Vec<Contest> = (*contest_lock).clone();
-    // drop(contest_lock);
-    // update_json_file();
-    // HttpResponse::Ok().json(response)
-
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
     let opts = Opts::from_url(url).unwrap();
     let pool = Pool::new(opts).unwrap();
@@ -128,7 +117,6 @@ async fn get_contests() -> impl Responder {
     for mut r in &mut res{
         let mut  query = "select questionId from contest_question where contestId=".to_owned();
         query.push_str(r.id.to_string().as_str());
-        // println!("{:?}",query);
         let t:Vec<usize> = conn.query(query).unwrap();
         (*r).problem_ids=t;
     }
@@ -163,7 +151,7 @@ async fn admin_get_contests()->impl Responder{
    let pool = Pool::new(opts).unwrap();
    let mut conn = pool.get_conn().unwrap();
 
-   let mut query="select questionId,questionTitle from question_info".to_owned();
+   let query="select questionId,questionTitle from question_info".to_owned();
    let mut pid:Vec<i32>=Vec::new();
    let mut ptitle:Vec<String>=Vec::new();
 
@@ -189,7 +177,7 @@ async fn admin_get_contests_list()->impl Responder{
     let pool = Pool::new(opts).unwrap();
     let mut conn = pool.get_conn().unwrap();
  
-    let mut query="select contestId,contestTitle from contest_info".to_owned();
+    let query="select contestId,contestTitle from contest_info".to_owned();
     let mut cid:Vec<i32>=Vec::new();
     let mut ctitle:Vec<String>=Vec::new();
  
@@ -218,9 +206,9 @@ async fn admin_add_contest(body: web::Json<ContestCreate>)->impl Responder{
     let mut query="insert into contest_info values(NULL,'".to_owned();
     query.push_str(&body.title);
     query.push_str("','111','");
-    query.push_str(&body.startTime);
+    query.push_str(&body.start_time);
     query.push_str("','");
-    query.push_str(&body.endTime);
+    query.push_str(&body.end_time);
     query.push_str("')");
     println!("{}",query);
  
@@ -296,19 +284,8 @@ async fn admin_delete_contests(body: web::Json<DeleteContest>) -> impl Responder
 
 #[post("/api/addContest")]
 async fn post_contest(body: web::Json<Contest>) -> impl Responder {
-
-    let mut contest_info: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
-    let contest_num: usize = contest_info.len(); // id from 1 to contest_num
-
-    // let contest_id = body.id.clone();
-    // if contest_id > contest_num { // the id is invalid
-    //     return HttpResponse::NotFound().json("Contest 114514 not found.");
-    // }
         
         let mut user_and_problem_valid: bool = true;
-       
-        let user_id = body.user.clone();
-        //判断是否为管理员的函数
 
         //判断是否存在该问题
         let problem_list = load_problems();

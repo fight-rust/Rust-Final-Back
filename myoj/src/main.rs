@@ -1,11 +1,9 @@
-use actix_web::{get, middleware::Logger, post, web, App, HttpServer, Responder};
+use actix_web::{ middleware::Logger, App, HttpServer};
 use contest::load_contests;
 use problem::get_problems;
 use problem::get_problems_id;
-use problem::load_problems;
 use judge::post_jobs;
 use judge::init_joblist;
-use job::Job;
 use job::get_jobs;
 use task::get_filter_jobs;
 
@@ -21,7 +19,6 @@ use crate::contest::admin_add_contest;
 use crate::contest::admin_delete_contests;
 use crate::problem::admin_add_problem;
 use crate::answer::get_answers;
-use crate::global::{JOB_LIST};
 
 mod user;
 mod test;

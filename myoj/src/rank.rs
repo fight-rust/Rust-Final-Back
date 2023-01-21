@@ -1,11 +1,11 @@
-use actix_web::{get, post,web, Responder, HttpResponse};
+use actix_web::{get, Responder, HttpResponse};
 use serde::{Serialize, Deserialize};
 use mysql::prelude::*;
 use mysql::*;
 
 #[derive(Serialize, Deserialize, Clone)]
 struct Request {
-    currentPage:usize,
+    current_page:usize,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -37,7 +37,7 @@ async fn get_rank() -> impl Responder {
    let pool = Pool::new(opts).unwrap();
    let mut conn = pool.get_conn().unwrap();
 
-   let mut query="select username,acnums from user_info".to_owned();
+   let query="select username,acnums from user_info".to_owned();
     let mut uname:Vec<String>=Vec::new();
     let mut uacnum:Vec<i32>=Vec::new();
 

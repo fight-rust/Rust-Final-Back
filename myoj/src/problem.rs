@@ -1,11 +1,9 @@
-use std::sync::{MutexGuard};
+
 use actix_web::{get, Responder, HttpResponse, web, post};
 use serde::{Serialize, Deserialize};
 use mysql::prelude::*;
 use mysql::*;
 use crate::global::{Problem};
-
-pub static mut  PROBLEM_LIST: Vec<Problem> = Vec::new();
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct NewProblem {
