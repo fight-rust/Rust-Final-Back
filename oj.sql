@@ -42,7 +42,7 @@ CREATE TABLE `answer_info`  (
 -- Records of answer_info
 -- ----------------------------
 INSERT INTO `answer_info` VALUES (1, 1, 2, 'aa12', '2023-01-21 20:29:34', 'abc', 'Answer Correct', 220);
-INSERT INTO `answer_info` VALUES (2, 1, 2, 'aa12', '2023-01-27 22:29:34', 'test', 'Success', 20);
+INSERT INTO `answer_info` VALUES (2, 1, 2, 'aa12', '2023-01-27 22:29:34', 'test', 'Compilation Error', 20);
 INSERT INTO `answer_info` VALUES (3, 2, 1, 'qwe', '2023-01-27 22:29:34', 'adf', 'Time Limit', 500);
 
 -- ----------------------------
