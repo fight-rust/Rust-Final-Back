@@ -140,13 +140,9 @@ async fn get_contests_id(path: web::Path<usize>) -> impl Responder {
     let contest_id: usize = path.into_inner();
     let contest_lock: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
     let contest_info: Vec<Contest> = (*contest_lock).clone();
-    // let contest_num: usize = contest_info.len();
-    // if contest_id > contest_num {
-    //     println!("fail");
-    //     return HttpResponse::NotFound().json("不存在该比赛");
-    // } 
+   
     let mut i=0;
-    while(i<contest_info.len())
+    while i<contest_info.len()
     {
         let contest = contest_info[i].clone();
         if contest.id==contest_id{
@@ -155,9 +151,8 @@ async fn get_contests_id(path: web::Path<usize>) -> impl Responder {
         }
         i=i+1;
     }
-    // let response: Contest = contest_info[contest_id - 1].clone();
+  
     drop(contest_lock);
-    // update_json_file();
     HttpResponse::Ok().json("不存在该比赛")
 }
 

@@ -36,19 +36,17 @@ async fn get_problems() -> impl Responder {
 async fn get_problems_id(path: web::Path<usize>) -> impl Responder {
     let problem_list = load_problems();
     let problem_id: usize = path.into_inner();
-    let mut if_find_problem_id: bool = false;
-    for j in 0..problem_list.len() {
-        if problem_id == problem_list[j].id as usize {
-            if_find_problem_id = true;
-            break;
-        }
-    }
-    if if_find_problem_id == false {
-        println!("fail");
-        return HttpResponse::NotFound().json("不存在该比赛");
-    } 
 
-    let response: Problem = problem_list[problem_id - 1].clone();
-    HttpResponse::Ok().json(response)
+    let mut i=0;
+    while i<problem_list.len()
+    {
+        let problem = problem_list[i].clone();
+        if problem.id==problem_id{
+            return HttpResponse::Ok().json(problem);
+        }
+        i=i+1;
+    }
+  
+    HttpResponse::Ok().json("不存在该题目")
 }
 
