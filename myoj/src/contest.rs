@@ -52,10 +52,10 @@ pub fn load_contests() {
         (*r).problem_ids=t;
     }
     
-    // *(CONTEST_INFO.lock().unwrap()) = res;
-    let mut contest_list = CONTEST_INFO.lock().unwrap();
-    *contest_list = res;
-    drop(contest_list);
+    *(CONTEST_INFO.lock().unwrap()) = res;
+    // let mut contest_list = CONTEST_INFO.lock().unwrap();
+    // *contest_list = res;
+    // drop(contest_list);
 }
 
 pub fn add_contest(contest:Contest) ->bool {
@@ -95,7 +95,7 @@ pub fn add_contest(contest:Contest) ->bool {
 
 #[get("/api/contests")]
 async fn get_contests() -> impl Responder {
-    load_contests();
+    // load_contests();
     let contest_lock: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
     let response: Vec<Contest> = (*contest_lock).clone();
     drop(contest_lock);
@@ -264,10 +264,11 @@ async fn post_contest(body: web::Json<Contest>) -> impl Responder {
         let res = add_contest(body.clone());
         if res==true
         {
+            load_contests();
             return HttpResponse::Ok().json("发起比赛成功");
         }
         else {
             return HttpResponse::ExpectationFailed().json("数据库添加失败".to_string());
         }
-    // `Id` is provided
+       
 }
