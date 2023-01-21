@@ -52,10 +52,10 @@ pub fn load_contests() {
         (*r).problem_ids=t;
     }
     
-    // *(CONTEST_INFO.lock().unwrap()) = res;
-    let mut contest_list = CONTEST_INFO.lock().unwrap();
-    *contest_list = res;
-    drop(contest_list);
+    *(CONTEST_INFO.lock().unwrap()) = res;
+    // let mut contest_list = CONTEST_INFO.lock().unwrap();
+    // *contest_list = res;
+    // drop(contest_list);
 }
 
 pub fn add_contest(contest:Contest) ->bool {
