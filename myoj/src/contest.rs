@@ -25,7 +25,7 @@ struct ContestCreate {
     title:String
 }
 
-pub fn load_contests() {
+pub fn load_contests(){
     let url = "mysql://root:123456@127.0.0.1:3306/oj";
     let opts = Opts::from_url(url).unwrap();
     let pool = Pool::new(opts).unwrap();
@@ -96,11 +96,38 @@ pub fn add_contest(contest:Contest) ->bool {
 #[get("/api/contests")]
 async fn get_contests() -> impl Responder {
     // load_contests();
-    let contest_lock: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
-    let response: Vec<Contest> = (*contest_lock).clone();
-    drop(contest_lock);
-    // update_json_file();
-    HttpResponse::Ok().json(response)
+    // let contest_lock: MutexGuard<Vec<Contest>> = CONTEST_INFO.lock().unwrap();
+    // let response: Vec<Contest> = (*contest_lock).clone();
+    // drop(contest_lock);
+    // // update_json_file();
+    // HttpResponse::Ok().json(response);
+
+    let url = "mysql://root:123456@127.0.0.1:3306/oj";
+    let opts = Opts::from_url(url).unwrap();
+    let pool = Pool::new(opts).unwrap();
+    let mut conn = pool.get_conn().unwrap();
+    let query = "select * from contest_info";
+    
+    let mut res = conn.query_map(
+        query,
+        |(id, name, user, start_time, end_time)| Contest {
+            id: id,
+            title: name,
+            user: user,
+            start_time: start_time,
+            end_time:end_time,
+            problem_ids: Vec::new(),
+        },
+    ).expect("Query failed.");
+   
+    for mut r in &mut res{
+        let mut  query = "select questionId from contest_question where contestId=".to_owned();
+        query.push_str(r.id.to_string().as_str());
+        // println!("{:?}",query);
+        let t:Vec<usize> = conn.query(query).unwrap();
+        (*r).problem_ids=t;
+    }
+        HttpResponse::Ok().json(res)
 }
 
 #[get("/api/contests/{contest_id}")]
